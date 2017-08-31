@@ -450,6 +450,15 @@ EOL
         ];
     }
 
+    public function consoleProtocol(): array
+    {
+        return [
+            'type'     => self::STRING_TYPE,
+            'location' => self::JSON,
+            'required' => true
+        ];
+    }
+
     public function consoleType(): array
     {
         return [

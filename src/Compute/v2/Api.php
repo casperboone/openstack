@@ -386,6 +386,21 @@ class Api extends AbstractApi
         ];
     }
 
+    public function getRemoteConsole(): array
+    {
+        return [
+            'method' => 'POST',
+            'path' => 'servers/{id}/remote-consoles',
+            'jsonKey' => 'remote_console',
+            'params' => [
+                'id' => $this->params->urlId('server'),
+                'getRemoteConsole' => $this->params->nullAction(),
+                'protocol' => $this->notRequired($this->params->consoleProtocol()),
+                'type' => $this->notRequired($this->params->consoleType())
+            ]
+        ];
+    }
+
     public function getVncConsole(): array
     {
         return [

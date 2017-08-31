@@ -209,6 +209,18 @@ class ServerTest extends TestCase
         $this->assertNull($this->server->revertResize());
     }
 
+    public function test_it_gets_remote_console()
+    {
+        $expectedJson = ['remote_console' => ['getRemoteConsole' => null]];
+
+        $this->setupMock('POST', 'servers/serverId/remote-consoles', $expectedJson, [], 'server-get-remote-console');
+
+        $response = $this->server->getRemoteConsole();
+
+        $this->assertArrayHasKey('url', $response);
+        $this->assertArrayHasKey('type', $response);
+    }
+
     public function test_it_gets_vnc_console()
     {
         $type = 'novnc';

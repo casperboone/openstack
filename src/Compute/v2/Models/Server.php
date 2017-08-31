@@ -90,13 +90,13 @@ class Server extends OperatorResource implements
     protected $markerKey = 'id';
 
     protected $aliases = [
-        'block_device_mapping_v2'             => 'blockDeviceMapping',
-        'accessIPv4'                          => 'ipv4',
-        'accessIPv6'                          => 'ipv6',
-        'tenant_id'                           => 'tenantId',
-        'user_id'                             => 'userId',
-        'security_groups'                     => 'securityGroups',
-        'OS-EXT-STS:task_state'               => 'taskState',
+        'block_device_mapping_v2' => 'blockDeviceMapping',
+        'accessIPv4' => 'ipv4',
+        'accessIPv6' => 'ipv6',
+        'tenant_id' => 'tenantId',
+        'user_id' => 'userId',
+        'security_groups' => 'securityGroups',
+        'OS-EXT-STS:task_state' => 'taskState',
         'OS-EXT-SRV-ATTR:hypervisor_hostname' => 'hypervisorHostname',
     ];
 
@@ -149,7 +149,7 @@ class Server extends OperatorResource implements
     public function changePassword(string $newPassword)
     {
         $this->execute($this->api->changeServerPassword(), [
-            'id'       => $this->id,
+            'id' => $this->id,
             'password' => $newPassword,
         ]);
     }
@@ -166,7 +166,7 @@ class Server extends OperatorResource implements
         }
 
         $this->execute($this->api->rebootServer(), [
-            'id'   => $this->id,
+            'id' => $this->id,
             'type' => $type,
         ]);
     }
@@ -215,7 +215,7 @@ class Server extends OperatorResource implements
     public function resize(string $flavorId)
     {
         $response = $this->execute($this->api->resizeServer(), [
-            'id'       => $this->id,
+            'id' => $this->id,
             'flavorId' => $flavorId,
         ]);
 
@@ -236,6 +236,26 @@ class Server extends OperatorResource implements
     public function revertResize()
     {
         $this->execute($this->api->revertServerResize(), ['revertResize' => null, 'id' => $this->id]);
+    }
+
+    /**
+     * Gets a remote console for a server.
+     *
+     * @param  string $protocol The protocol of remote console, valid values are vnc, spice, rdp, serial and mks.
+     *                          By default the protocol will be chosen automatically.
+     * @param  string $type     The type of remote console, valid values are novnc, xvpvnc, rdp-html5, spice-html5, serial, and webmks.
+     *                          By default the type will be chosen automatically.
+     *
+     * @return array
+     */
+    public function getRemoteConsole($protocol = null, $type = null)
+    {
+        $response = $this->execute($this->api->getRemoteConsole(), array_merge(
+            ['getRemoteConsole' => null, 'id' => $this->id],
+            $protocol ? ['protocol' => $protocol] : [],
+            $type ? ['type' => $type] : []
+        ));
+        return Utils::jsonDecode($response)['remote_console'];
     }
 
     /**
@@ -403,7 +423,7 @@ class Server extends OperatorResource implements
      *
      * @return SecurityGroup
      */
-    public function addSecurityGroup(array $options) : SecurityGroup
+    public function addSecurityGroup(array $options): SecurityGroup
     {
         $options['id'] = $this->id;
 
@@ -458,7 +478,7 @@ class Server extends OperatorResource implements
      */
     public function attachVolume(string $volumeId): VolumeAttachment
     {
-        $response =  $this->execute($this->api->postVolumeAttachments(), ['id' => $this->id, 'volumeId' => $volumeId]);
+        $response = $this->execute($this->api->postVolumeAttachments(), ['id' => $this->id, 'volumeId' => $volumeId]);
 
         return $this->model(VolumeAttachment::class)->populateFromResponse($response);
     }
